@@ -1,0 +1,116 @@
+name: Package Skills
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      skill_name:
+        description: 'Skill to package (leave empty for all)'
+        required: false
+        type: string
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" == "push" ]; then
+            VERSION=${GITHUB_REF#refs/tags/v}
+          else
+            VERSION="manual-$(date +%Y%m%d-%H%M%S)"
+          fi
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
+
+      - name: Package skills
+        run: |
+          mkdir -p releases
+
+          # Function to package a single skill
+          package_skill() {
+            local skill_dir=$1
+            local skill_name=$(basename "$skill_dir")
+            local version=$2
+
+            echo "Packaging $skill_name..."
+
+            cd "$skill_dir"
+            zip -r "../../releases/${skill_name}-v${version}.skill" . \
+              -x "*.DS_Store" \
+              -x "*.git*" \
+              -x "*__pycache__*" \
+              -x "*.pyc"
+            cd ../..
+
+            echo "✓ Created releases/${skill_name}-v${version}.skill"
+          }
+
+          # Package specific skill or all skills
+          if [ -n "${{ inputs.skill_name }}" ]; then
+            if [ -d "skills/${{ inputs.skill_name }}" ]; then
+              package_skill "skills/${{ inputs.skill_name }}" "${{ steps.version.outputs.version }}"
+            else
+              echo "Error: Skill '${{ inputs.skill_name }}' not found"
+              exit 1
+            fi
+          else
+            for skill_dir in skills/*/; do
+              if [ -d "$skill_dir" ]; then
+                package_skill "$skill_dir" "${{ steps.version.outputs.version }}"
+              fi
+            done
+          fi
+
+      - name: Generate checksums
+        run: |
+          cd releases
+          sha256sum *.skill > checksums.txt
+          cat checksums.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: packaged-skills-${{ steps.version.outputs.version }}
+          path: releases/
+
+      - name: Create Release (if tagged)
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            releases/*.skill
+            releases/checksums.txt
+          body: |
+            ## Skills Release ${{ steps.version.outputs.version }}
+
+            ### Packaged Skills
+
+            All skills have been packaged and are ready to install.
+
+            ### Installation
+
+            Download the `.skill` file and extract to your Claude Code skills directory:
+
+            ```bash
+            # Download skill
+            curl -L https://github.com/${{ github.repository }}/releases/download/v${{ steps.version.outputs.version }}/SKILL_NAME-v${{ steps.version.outputs.version }}.skill -o skill.skill
+
+            # Extract to Claude Code
+            unzip skill.skill -d ~/.claude/skills/SKILL_NAME
+            ```
+
+            ### Checksums
+
+            Verify integrity using SHA256 checksums in `checksums.txt`.
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
