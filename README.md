@@ -156,7 +156,6 @@ Individual skills may have their own licenses - check each skill's LICENSE.txt f
 
 **Vishal Sachdev**
 - GitHub: [@vishalsachdev](https://github.com/vishalsachdev)
-- Website: [vishalsachdev.com](https://vishalsachdev.com) *(if applicable)*
 
 ---
 
