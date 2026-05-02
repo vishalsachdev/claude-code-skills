@@ -62,16 +62,22 @@ Each member gets the same prompt: the user's question + relevant context + this 
 
 The "biggest risk in your own answer" line is load-bearing — it primes the model to flag its own weakness, which makes round 2 more productive.
 
-### Round 2 — Cross-critique
+### Round 2 — Cross-critique (anonymized)
 
-Send each member the other two answers. Prompt:
+Send each member the other two answers, **with peer identities anonymized as "Model A" and "Model B"**. Each model gets a different random A/B mapping so it can't infer who's who across runs. The model never learns which family produced which answer.
 
-> "Two other models answered the same question. Here are their answers:
+Why anonymize: prevents brand bias — deferring to known-strong models, attacking known-weak ones, or refusing to disagree with one's own family. Without this, R2 critiques drift toward politics instead of substance. Credit: Karpathy's [llm-council](https://github.com/karpathy/llm-council).
+
+Prompt:
+
+> "Two other models answered the same question. Their identities are anonymized.
 >
-> [model A]: ...
-> [model B]: ...
+> Model A: ...
+> Model B: ...
 >
 > Where are they wrong? Where are they right and your original answer was wrong? Be specific. Don't be polite. Under 200 words."
+
+In the transcript, record the anonymization mapping so you can de-anonymize for the synthesis step. The user-facing report uses real names; only the cross-critique itself is blind.
 
 This is the round that produces the value. Without it the skill is theatre.
 
@@ -83,6 +89,8 @@ Read all 6 outputs (3 answers + 3 critiques) and produce:
 2. **Where the council disagrees** — the actual deltas. Each side's strongest argument in 1-2 sentences.
 3. **Which disagreement matters most** — for this user's specific decision, which delta should drive the call?
 4. **Recommendation** — Claude's call. Explicitly name which member you're siding with on the load-bearing disagreement and why.
+
+**Self-bias check** (mandatory before finalizing): Claude is both a member (R1 answer) and the chairman (this synthesis). That's a structural conflict — Claude will systematically over-weight its own R1 because (a) it has session context the others lack, and (b) it "feels right" to itself. Before finalizing the recommendation, ask: *am I siding with my own R1 answer because it's actually better, or because I wrote it?* If the only reason it's winning is "I have more context," that's not a real reason — GPT and Gemini may have caught a blind spot Claude doesn't see. State the bias check explicitly in the synthesis output (one sentence) so the user can audit it.
 
 ## Output
 
