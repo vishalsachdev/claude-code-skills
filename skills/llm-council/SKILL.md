@@ -100,14 +100,35 @@ Read all 6 outputs (3 answers + 3 critiques) and produce:
 
 ## Context passing
 
-The cold CLIs don't see this conversation. The skill must build a self-contained prompt for each member:
+By default the CLIs don't see this conversation, but **you control what goes in the prompt**. Context is transferable — it just costs tokens. Don't treat it as a hard constraint.
 
-1. The question itself
-2. Relevant context the user has shared (paste relevant excerpts, don't reference "the file we discussed")
-3. Specific constraints (budget, timeline, audience, existing tech) — explicit, not assumed
-4. Cap each round's response length so synthesis stays tractable (250 words R1, 200 R2)
+Three mechanisms, in order of cost:
 
-If the question depends on a file or codebase, paste the relevant excerpts directly into the prompt. Don't assume the CLI agents can see the workspace.
+1. **Point the CLI at files on disk.** Both `codex exec` and `gemini -p` run in a workdir and can read files themselves. Cheapest. Use this when the relevant context is already in files (a CLAUDE.md, a brief, a code file).
+2. **Paste excerpts inline.** When context lives in the conversation (decisions made, things ruled out, user's revealed preferences), paste the relevant chunks into the prompt. Medium cost.
+3. **Summarize the conversation.** For long sessions where pasting verbatim is too expensive, write a 1-paragraph brief: what's been decided, what's been rejected, what the user actually cares about. Lossy but tractable.
+
+Build a self-contained prompt for each member that includes:
+- The question itself
+- Relevant context (pasted, summarized, or via file pointer)
+- Specific constraints (budget, timeline, audience, existing tech) — explicit, not assumed
+- Response length cap (250 words R1, 200 R2)
+
+**Rule of thumb:** the question's *cost of being wrong* sets the context budget. A $50 decision doesn't justify packaging 5KB of context for three CLI calls. A $50K decision does.
+
+What's genuinely hard to transfer: implicit reasoning the conversation built up, dead ends already explored, the user's tone. Summarize these explicitly when they matter — don't leave them implicit.
+
+## Chairman selection (advanced)
+
+By default Claude (this session) chairs because it has the richest session context with no transfer cost. But Claude is also a member, and that's a structural conflict — Claude will systematically over-weight its own R1 answer in synthesis.
+
+If the self-bias check (Round 3) keeps surfacing real over-weighting, **rotate the chairman**:
+
+1. Package the full context (R1 answers, R2 critiques, original question, relevant brief) into a single prompt
+2. Send to Codex or Gemini with directive: "You are the chairman. Synthesize the council's findings into the 4-section output (agreement / disagreement / what matters most / recommendation). Be direct."
+3. Use the rotated synthesis as the basis for the user-facing report; Claude still adds final commentary
+
+Rotating chairman costs more tokens (full context goes to a cold CLI) but eliminates the member-as-chairman conflict for high-stakes decisions where you've caught Claude's bias before.
 
 ## Failure handling
 
@@ -119,7 +140,7 @@ If the question depends on a file or codebase, paste the relevant excerpts direc
 ## Anti-patterns
 
 - Showing raw R1/R2 output without synthesis — the synthesis is the product
-- Weighting all three equally on every topic — Claude has session context, the others don't. Weight accordingly
+- Weighting all three equally on every topic without packaging context for the others — if you didn't give them what Claude has, their answers will be cold and generic. Either package context, or weight accordingly
 - Burying the recommendation in hedged language — end with a clear call
 - Running the council on simple questions — hard-gate this skill
 - Skipping R2 to save tokens — R2 is the value; without it just ask Claude
