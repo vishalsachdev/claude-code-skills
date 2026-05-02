@@ -50,7 +50,7 @@ Run a Gary Klein-style premortem on any plan, launch, hire, or strategy: assume 
 
 **How it works:** gathers minimum context, generates the full failure-reason list, spawns one parallel agent per failure to write the failure story, then synthesizes the most likely / most dangerous / hidden assumption / revised plan / pre-launch checklist into an HTML report.
 
-📖 [Full Documentation](./skills/premortem/SKILL.md)
+📖 [Full Documentation](./skills/premortem/SKILL.md) · Inspired by [@itsolelehmann](https://x.com/itsolelehmann/status/2050548948419645488)
 
 ---
 
