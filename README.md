@@ -40,6 +40,30 @@ Comprehensive academic paper writing guidance with expert workflows, templates, 
 
 ---
 
+### 🔮 Premortem
+
+Run a Gary Klein-style premortem on any plan, launch, hire, or strategy: assume it already failed 6 months from now and work backward to find every reason why. Produces a revised plan with blind spots exposed.
+
+**Use when:** you have a concrete plan with high cost-of-being-wrong and want to surface failure modes before committing.
+
+**How it works:** gathers minimum context, generates the full failure-reason list, spawns one parallel agent per failure to write the failure story, then synthesizes the most likely / most dangerous / hidden assumption / revised plan / pre-launch checklist into an HTML report.
+
+📖 [Full Documentation](./skills/premortem/SKILL.md)
+
+---
+
+### 🏛️ LLM Council
+
+Convene a 3-model council (Claude + GPT via codex CLI + Gemini CLI) on a high-stakes decision. Forces cross-critique between members and surfaces where the models actually disagree — breaking Claude's default agreeableness.
+
+**Use when:** architecture, strategy, hiring, or pricing decisions where being wrong is expensive and you want genuinely different model perspectives, not just three Claude responses.
+
+**How it works:** Round 1 — each model answers independently. Round 2 — each model critiques the others' answers. Round 3 — Claude synthesizes agreement, disagreement, what matters most, and a recommendation. Requires `codex` and `gemini` CLIs installed.
+
+📖 [Full Documentation](./skills/llm-council/SKILL.md)
+
+---
+
 ## 🚀 Quick Start
 
 ### Installation
