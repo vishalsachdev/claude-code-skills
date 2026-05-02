@@ -5,6 +5,8 @@
 
 Professional skills for [Claude Code](https://claude.com/claude-code) following the [Agent Skills](https://agentskills.io) open specification.
 
+> **Attribution note:** Some skills in this repository were originally contributed or inspired by other authors in the broader Claude Code community. I've collected and refined them over time across many machines and sessions, and I've lost the traceability needed to credit individual contributors. If you recognize a skill as yours or derived from your work, please open an issue and I'll happily add attribution. Skills I authored myself are noted in their frontmatter.
+
 ## 📚 Available Skills
 
 ### 📝 Paper Writing
@@ -49,6 +51,56 @@ Run a Gary Klein-style premortem on any plan, launch, hire, or strategy: assume 
 **How it works:** gathers minimum context, generates the full failure-reason list, spawns one parallel agent per failure to write the failure story, then synthesizes the most likely / most dangerous / hidden assumption / revised plan / pre-launch checklist into an HTML report.
 
 📖 [Full Documentation](./skills/premortem/SKILL.md)
+
+---
+
+### 📊 Agentic Eval-First Development
+
+Architect, execute, and iterate on AI evaluations using the Data-Task-Score framework. Treats evals as the modern, quantifiable version of a PRD — moves teams beyond vibe checks to measurable AI quality.
+
+**Use when:** building an eval, improving model quality, testing an agent workflow, quantifying product intuition, or setting up evaluation infrastructure.
+
+📖 [Full Documentation](./skills/agentic-eval-first-development/SKILL.md)
+
+---
+
+### 🛡️ Agentic Validators
+
+Design and install validation hooks for coding agents to make AI changes safer and more deterministic. Covers post-tool-use and stop hooks, automated tests/linters/formatters, parallel sub-agents with per-file validation, and audit logs.
+
+**Use when:** you want to harden Claude Code with deterministic guardrails — catching bad edits before they land instead of after.
+
+📖 [Full Documentation](./skills/agentic-validators/SKILL.md)
+
+---
+
+### 🎯 Codebase Singularity
+
+A repeatable workflow for reliable codebase understanding and change. Provides guardrails and verification gates for high-trust, minimal-diff work — features, bugfixes, refactors, migrations.
+
+**Use when:** the cost of an incorrect change is high and you want explicit validation steps and exit criteria, not just "looks good to me."
+
+📖 [Full Documentation](./skills/codebase-singularity/SKILL.md)
+
+---
+
+### 🚀 Start / Wrap-Up Session
+
+Two paired meta-skills for session lifecycle. **Start** reads project context (CLAUDE.md, git status, recent commits) and orients you for the session. **Wrap-up** reviews work, updates roadmaps, archives session logs, and surfaces carry-forward items.
+
+**Use when:** you want consistent session bookends across all your repos — a reliable "where were we?" at the start and a clean handoff at the end.
+
+📖 [Start Session](./skills/start-session/SKILL.md) · [Wrap-Up Session](./skills/wrap-up-session/SKILL.md)
+
+---
+
+### 🐦 Tweet Series Extractor
+
+Extract tweet series from X/Twitter profiles with full content, embedded links, and engagement metrics preserved. Useful for analyzing recurring tweet formats — daily updates, weekly roundups, threads.
+
+**Use when:** you want to study how someone tweets, archive your own tweets, or build a content corpus from a creator's profile.
+
+📖 [Full Documentation](./skills/tweet-series-extractor/SKILL.md)
 
 ---
 
