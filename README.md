@@ -1,5 +1,23 @@
 # Claude Code Skills by Vishal Sachdev
 
+> # ⚠️ This repository has moved and is archived
+>
+> **All skills here now live in [vishalsachdev/claude-skills](https://github.com/vishalsachdev/claude-skills).**
+>
+> As of **2026-08-01** this repository is archived and read-only. Everything moved: all 10 skills,
+> `skill-specs/`, `releases/`, the MIT license, the attribution note, and the contributing guide
+> (now `docs/skill-authoring-mechanics.md`). Nothing was dropped.
+>
+> Several skills here had also fallen behind their maintained versions, so the copies in
+> `claude-skills` are newer — please use those rather than forking from this snapshot.
+>
+> Open issues and PRs against
+> [vishalsachdev/claude-skills](https://github.com/vishalsachdev/claude-skills) instead.
+>
+> Two items were intentionally left behind and remain readable here:
+> `docs/QM Higher Education Rubric Seventh Edition.pdf` (a third-party copyrighted rubric, not
+> duplicated), and `AGENTS.md` (machine-specific agent boilerplate).
+
 [![Agent Skills](https://img.shields.io/badge/Agent%20Skills-Compatible-blue?style=flat&logo=anthropic)](https://agentskills.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
